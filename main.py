@@ -61,6 +61,34 @@ class Manager:
         self.apartments = Apartment.from_json_file(self.parameters.apartments_json_path)
         self.tenants = Tenant.from_json_file(self.parameters.tenants_json_path)
 
+class Bill:
+    def __init__(self, kwota, date, type, apartment):
+        self.kwota=kwota
+        self.date=date
+        self.type=type
+        self.apartment=apartment
+
+    def __repr__(self):
+        return f"Bill({self.kwota}, {self.date}, {self.type}, {self.apartment})"
+
+def load_bills(filename):
+    with open(filename, 'r') as file:
+        bills_data=json.load(file)
+        bills=[]
+        for bill_data in bills_data:
+            bill=Bill(
+                bill_data['kwota'],
+                datetime.strptime(bill_data['date'], '%Y-%m-%d'),
+                bill_data['type'],
+                bill_data['apartment']
+            )
+            bills.append(bill)
+        return bills
+
+bills = load_bills('bills.json')
+for bill in bills:
+    print(bill)
+
 if __name__ == '__main__':
     parameters = Parameters()
     manager = Manager(parameters)
